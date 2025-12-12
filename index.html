@@ -1,457 +1,307 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+﻿<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>自然法则2025年度大抽奖</title>   
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: linear-gradient(180deg, #ffcf4b 0%, #ff9a00 100%);
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-            padding-bottom: 60px;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>jQuery手机微信转盘抽奖代码 - 站长素材</title>
 
-        .header { text-align: center; margin-top: 30px; color: #d93600; }
-        .header h1 { font-size: 24px; font-weight: bold; border: 2px solid #333; display: inline-block; padding: 5px 20px; margin-bottom: 10px; background: #fffdf0; border-radius: 6px;}
-        .header h2 { font-size: 32px; font-weight: 800; text-shadow: 1px 1px 2px rgba(255,255,255,0.5); color:#6b2100; margin-top:8px;}
+<link href="css/mui.min.css" rel="stylesheet">
+<link href="css/award.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="css/animate.min.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/turntable.js"></script>
+<style type="text/css">
+	body,ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,div{margin:0;padding:0;border:0;}
+	body{color:#333; font-size:12px;font-family:"Microsoft YaHei"}
+	ul,ol{list-style-type:none;}
+	select,input,img,select{vertical-align:middle;}
+	input{ font-size:12px;}
+	a{ text-decoration:none; color:#000;}
+	a:hover{color:#c00; text-decoration:none;}
+	.clear{clear:both;}
 
-        .wheel-container {
-            position: relative;
-            width: 320px; height: 320px;
-            margin: 20px auto;
-            padding: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            border-radius: 50%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.05));
-            border: 4px solid #ffeb3b;
-        }
-        .wheel-container::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%; border: 2px dashed rgba(255,255,255,0.25);
-            animation: flash 1s infinite; pointer-events: none;
-        }
-        @keyframes flash { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+	/* 大转盘样式 */
+	.banner{display:block;width:95%;margin-left:auto;margin-right:auto;margin-bottom: 20px;}
+	.banner .turnplate{display:block;width:100%;position:relative;}
+	.banner .turnplate canvas.item{width:100%;}
+	.banner .turnplate img.pointer{position:absolute;width:36%;height:40%;left:32%;top:28%;}
+	.more{display: block;width: 100%;position: fixed;top: 0;left: 0;height: 150px;}
+	.cloud{position: fixed;left: 0;top: 70%;width: 150px;}
+	.cloud2{position: fixed;right: 0;top: 32%;width: 50px;}
+	.cloud3{position: fixed;left: 0;top: 30%;width: 100px;}
+	@media screen and (max-width: 320px) {
+		.cloud{position: fixed;left: 0;top: 70%;width: 150px;}
+		.cloud2{position: fixed;right: 0;top: 30%;width: 50px;}
+		.cloud3{position: fixed;left: 0;top: 23%;width: 100px;}
+	}
+	@media screen and (min-width: 321px) and (max-width: 375px) {
+		.cloud{position: fixed;left: 0;top: 72%;width: 150px;}
+		.cloud2{position: fixed;right: 0;top: 32%;width: 50px;}
+		.cloud3{position: fixed;left: 0;top: 25%;width: 100px;}
+	}
+	@media screen and (min-width: 376px) {
+		.cloud{position: fixed;left: 0;top: 68%;width: 150px;}
+		.cloud2{position: fixed;right: 0;top: 32%;width: 50px;}
+		.cloud3{position: fixed;left: 0;top: 25%;width: 100px;}
+	}
+	@media screen and (max-height: 480px) {
+		.cloud{position: fixed;left: 0;top: 81%;width: 150px;}
+		.cloud2{position: fixed;right: 0;top: 35%;width: 50px;}
+		.cloud3{position: fixed;left: 0;top: 27%;width: 100px;}
+	}
 
-        .wheel {
-            width: 100%; height: 100%;
-            background: #fffdf0; border-radius: 50%;
-            position: relative; overflow: hidden;
-            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1);
-        }
-        .wheel-bg {
-            width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(
-                #fffdf0 0deg 60deg, #ffe0b2 60deg 120deg,
-                #fffdf0 120deg 180deg, #ffe0b2 180deg 240deg,
-                #fffdf0 240deg 300deg, #ffe0b2 300deg 360deg
-            );
-        }
-        .prize-item {
-            position: absolute; top: 0; left: 50%;
-            width: 100px; height: 50%; margin-left: -50px;
-            transform-origin: bottom center; text-align: center;
-            padding-top: 20px; font-size: 12px; color: #d35400; font-weight: bold;
-        }
-        .item-1 { transform: rotate(30deg); }
-        .item-2 { transform: rotate(90deg); }
-        .item-3 { transform: rotate(150deg); }
-        .item-4 { transform: rotate(210deg); }
-        .item-5 { transform: rotate(270deg); }
-        .item-6 { transform: rotate(330deg); }
-        .prize-icon { display: block; width: 30px; height: 30px; background: #ddd; margin: 5px auto; border-radius: 4px; line-height: 30px; font-size: 14px; color: #666; }
+	#mark{width: 100%;height: 100%;background: rgba(0,0,0,0.5);position: fixed;top: 0;left: 0;display: none;}
+	.red-img{position: fixed;top: 10%;left: 5%;width: 90%;}
+</style>
 
-        .pointer {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px; height: 80px;
-            background: linear-gradient(to bottom, #ffcc00, #ff9900);
-            border-radius: 50%; border: 4px solid #fff;
-            box-shadow: 0 4px 0 #cc7a00;
-            z-index: 10; display: flex; justify-content: center; align-items: center;
-            font-size: 20px; font-weight: bold; color: #d35400; cursor: pointer;
-        }
-        .pointer::before {
-            content: ''; position: absolute; top: -20px; left: 50%;
-            transform: translateX(-50%);
-            border-width: 15px; border-style: solid;
-            border-color: transparent transparent #ffcc00 transparent;
-        }
-        .pointer:active { transform: translate(-50%, -48%); box-shadow: 0 2px 0 #cc7a00; }
-        .pointer.disabled {
-            background: #ccc; box-shadow: 0 4px 0 #999; color: #666; cursor: not-allowed;
-        }
-        .pointer.disabled::before { border-bottom-color: #ccc; }
-
-        .footer-list {
-            width: 90%; background: rgba(255, 255, 255, 0.12);
-            border-radius: 10px; padding: 10px; margin-top: 10px;
-            text-align: center; z-index: 5; height: 150px;
-            display: flex; flex-direction: column;
-            backdrop-filter: blur(3px);
-        }
-        .list-title { color: #fff; font-size: 14px; margin-bottom: 8px; font-weight: bold; flex-shrink: 0;}
-        .marquee-container { flex: 1; overflow-y: auto; position: relative; -webkit-overflow-scrolling: touch; padding:6px;}
-        .marquee-container::-webkit-scrollbar { width: 6px; }
-        .marquee-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
-
-        .record-item { color: #fff; font-size: 13px; line-height: 26px; border-bottom: 1px dashed rgba(255,255,255,0.12); padding: 2px 4px; text-align:left;}
-        .record-item b { color: #d93600; background: rgba(255,255,255,0.6); padding: 0 6px; border-radius: 4px; margin-right:6px; font-weight:700;}
-        .record-time { font-size: 11px; color: #fff; opacity: 0.85; float:right; }
-
-        .city-bg { position: fixed; bottom: 0; width: 100%; height: 60px; background-color: #e67e22; mask-image: linear-gradient(to top, black, transparent); -webkit-mask-image: linear-gradient(to top, black, transparent); opacity: 0.5; z-index: 0; }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 100; display: none;
-            justify-content: center; align-items: center;
-        }
-        .modal-box { background: #fff; width: 88%; max-width: 320px; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); animation: popIn 0.25s; }
-        .modal-title { font-size: 18px; color: #333; margin-bottom: 12px; font-weight: bold; }
-        .modal-input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 12px; outline: none; }
-        .modal-input:focus { border-color: #ff9900; }
-        .modal-btn { background: linear-gradient(to right, #ff9900, #ff5e00); color: white; border: none; padding: 10px 30px; border-radius: 20px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 94, 0, 0.3); }
-
-        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    </style>
-
-    <!-- Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<!-------------抽奖页面-------------->
+<div class="ml-main" id="ml-main">
+	<img class="main_back" src="img/back.png">
+	<img class="animated zoomIn img_2_1" src="img/img_1.png">
+	<img class="animated bounceIn img_2_2" src="img/img_2.png">
+	<div class="kePublic">
+		<!--转盘效果开始-->
+		<div style="margin:0 auto">
+			<div class="banner">
+				<div class="turnplate">
+					<!-- <canvas class="item" id="wheelcanvas" width="516" height="516"></canvas> -->
+					<canvas class="item" id="myCanvas" width="520px" height="520px">当前浏览器版本过低，请使用其他浏览器尝试</canvas>
+					<img src="images/start.png" id="start" class="pointer">
+					<!-- <img id="tupBtn" class="pointer" src="img/turnplate-pointer_2.png"> -->
+				</div>
+			</div>
+		</div>
+		<!--转盘效果结束-->
+		<div class="clear"></div>
+	</div>
+	<img class="bottom_shadow" src="img/bottom_shadow.png">
+	<img class="animated zoomIn kePublic_back" src="img/back1.png">
+	
+	<!--------------滚动中奖纪录---------------->
+	<div class="record_line" id="Marquee">
+		<div id="">
+			恭喜  159****3540  的用户抽中  <span id="gift_coupon">200元现金代金券</span>
+		</div>
+	</div>
 
-    <!-- 姓名输入弹窗 -->
-    <div class="modal-overlay" id="nameModal">
-        <div class="modal-box">
-            <div class="modal-title">请输入您的姓名</div>
-            <input type="text" class="modal-input" id="usernameInput" placeholder="例如：李四" maxlength="20" />
-            <div style="display:flex; justify-content:center; gap:10px;">
-                <button class="modal-btn" onclick="submitName()">开始抽奖</button>
-            </div>
-        </div>
-    </div>
+	<!-------------底部声明-------------->
+	<img class="rule_title" src="img/rule_title.png">
+	<div class="rule_text">
+		本活动与Apple Inc.无关。<br>
+		主办单位：<a href="http://www.geekxz.com/" target="_blank">自然法则（集团）有限公司</a>
+	</div>
+</div>
 
-    <div class="header">
-        <h1>探探</h1>
-        <h2>探探5周年<br>拉人大抽奖</h2>
-    </div>
+<!-------------中奖弹窗页面-------------->
+<div class="zj-main" id="zj-main">
+		<div class="txzl">
+			<div class="zj_text">
+				中奖啦<br>恭喜获得<span id="jiangpin"></span>
+			</div>
+			<div class="close_zj">关闭</div>
+		</div>
+</div>
 
-    <div class="wheel-container">
-        <div class="wheel" id="wheel">
-            <div class="wheel-bg"></div>
-            <div class="prize-item item-1"><span>纪梵希<br>小羊皮口红</span><span class="prize-icon">💄</span></div>
-            <div class="prize-item item-2"><span>ARMANI<br>阿玛尼</span><span class="prize-icon">🎁</span></div>
-            <div class="prize-item item-3"><span>探探<br>VIP会员</span><span class="prize-icon">👑</span></div>
-            <div class="prize-item item-4"><span>iPhone<br>XS</span><span class="prize-icon">📱</span></div>
-            <div class="prize-item item-5"><span>圣罗兰<br>口红</span><span class="prize-icon">💄</span></div>
-            <div class="prize-item item-6"><span>谢谢<br>参与</span><span class="prize-icon">😊</span></div>
-        </div>
+<!-------------谢谢参与弹窗-------------->
+<div class="xxcy-main" id="xxcy-main">
+	<div class="xxcy">
+		<div class="xxcy_text">
+			很遗憾<br>没有抽中礼品
+		</div>   
+		<div class="close_xxcy">关闭</div>
+	</div>
+</div>
 
-        <div class="pointer" id="drawBtn" onclick="checkUserAndSpin()">抽奖</div>
-    </div>
 
-    <div class="footer-list">
-        <div class="list-title">—— 中奖名单 (实时更新) ——</div>
-        <div class="marquee-container" id="marqueeList">
-            <!-- 列表将由JS加载 -->
-        </div>
-    </div>
+<script>
+	var wheelSurf
+	// 初始化装盘数据 正常情况下应该由后台返回
+	var initData = {
+		"success": true,
+		"list": [{
+				"id": 100,
+				"name": "5000元京东卡",
+				"image": "images/1.png",
+				"rank":1,
+				"percent":0
+			},
+			{
+				"id": 101,
+				"name": "1000元京东卡",
+				"image": "images/2.png",
+				"rank":2,
+				"percent":0
+			},
+			{
+				"id": 102,
+				"name": "谢谢参与",
+				"image": "images/3.png",
+				"rank":3,
+				"percent":99
+			},
+			{
+				"id": 103,
+				"name": "50元话费",
+				"image": "images/4.png",
+				"rank":4,
+				"percent":0
+			},
+			{
+				"id": 104,
+				"name": "100元话费",
+				"image": "images/5.png",
+				"rank":5,
+				"percent":0
+			},
+			{
+				"id": 105,
+				"name": "谢谢参与",
+				"image": "images/6.png",
+				"rank":6,
+				"percent":0
+			},
+			{
+				"id": 106,
+				"name": "喜素客素食自助餐",
+				"image": "images/7.png",
+				"rank":7,
+				"percent":0
+			}
+		]
+	}
 
-    <div class="city-bg"></div>
+	// 计算分配获奖概率(前提所有奖品概率相加100%)
+	function getGift(){
+		var percent = Math.random()*100
+		var totalPercent = 0
+		for(var i = 0 ,l = initData.list.length;i<l;i++){
+			totalPercent += initData.list[i].percent
+			if(percent<=totalPercent){
+				console.log(initData.list[i]);
+				return initData.list[i]
+			}
+		}           
+	}
 
-    <script>
-/******************************
- *  请务必替换下面两项为你自己的 Supabase 配置！
- ******************************/
-const SUPA_URL = "https://meiydxhkrtsupwzlvdiv.supabase.co";
-const SUPA_KEY = "sb_publishable_IoTm5rBUQo7_KuF9yM3UiA_xSbfGR2K";
+	var list = {}
+	
+	var angel = 360 / initData.list.length
+	// 格式化成插件需要的奖品列表格式
+	for (var i = 0, l = initData.list.length; i < l; i++) {
+		list[initData.list[i].rank] = {
+			id:initData.list[i].id,
+			name: initData.list[i].name,
+			image: initData.list[i].image
+		}
+	}
+	// 查看奖品列表格式
+	
+	// 定义转盘奖品
+	wheelSurf = $('#myCanvas').WheelSurf({
+		list: list, // 奖品 列表，(必填)
+		outerCircle: {
+			color: '#df1e15' // 外圈颜色(可选)
+		},
+		innerCircle: {
+			color: '#f4ad26' // 里圈颜色(可选)
+		},
+		dots: ['#fbf0a9', '#fbb936'], // 装饰点颜色(可选)
+		disk: ['#ffb933', '#ffe8b5', '#ffb933', '#ffd57c', '#ffb933', '#ffe8b5', '#ffd57c'], //中心奖盘的颜色，默认7彩(可选)
+		title: {
+			color: '#5c1e08',
+			font: '19px Arial'
+		} // 奖品标题样式(可选)
+	})
 
-const supabase = window.supabase?.createClient?.(SUPA_URL, SUPA_KEY) 
-    || setTimeout(() => location.reload(), 500);
+	// 初始化转盘
+	wheelSurf.init()
+	// 抽奖
+	var throttle = true;
+	$("#start").on('click', function () {
 
-// 为了不影响你原来的数据，这里用了新的 key
-const STORAGE_KEY_COUNT = 'lottery_count_2025';     // 今天已抽次数
-const STORAGE_KEY_DATE  = 'lottery_date_2025';      // 日期
-const STORAGE_KEY_RECORDS = 'lottery_records_v1';    // 你原来的中奖记录保持不动
+		var winData = getGift() // 正常情况下获奖信息应该由后台返回
 
-let isSpinning = false;
-let currentRotation = 0;
-let currentUser = "";
+		$("#message").html('')
+		if(!throttle){
+			return false;
+		}
+		throttle = false;
+		var count = 0
+		// 计算奖品角度
 
-// 新增：获取今天已抽次数（最多3次）
-function getTodayDrawCount() {
-    const lastDate = localStorage.getItem(STORAGE_KEY_DATE);
-    const today = new Date().toLocaleDateString();
-    if (lastDate !== today) {
-        localStorage.setItem(STORAGE_KEY_COUNT, "0");
-        localStorage.setItem(STORAGE_KEY_DATE, today);
-        return 0;
-    }
-    return parseInt(localStorage.getItem(STORAGE_KEY_COUNT) || "0", 10);
-}
+		for (const key in list) {
+			if (list.hasOwnProperty(key)) {                    
+				if (winData.id == list[key].id) {
+					break;
+				}
+				count++    
+			}
+		}
+  
+		// 转盘抽奖，
+		wheelSurf.lottery((count * angel + angel / 2), function () {
+			/*$(".xxcy_text").html('谢谢参与');
+			$("#xxcy-main").fadeIn();*/
+			$("#zj-main").fadeIn();
+			$("#jiangpin").text('['+winData.name+']');
+			throttle = true;
+		})
+	})
 
-// 新增：增加一次抽奖次数
-function addOneDraw() {
-    const newCount = getTodayDrawCount() + 1;
-    localStorage.setItem(STORAGE_KEY_COUNT, newCount.toString());
-}
 
-// 新增：更新按钮状态（只改文字，不动样式）
-function updateDrawButton() {
-    const btn = document.getElementById('drawBtn');
-    const count = getTodayDrawCount();
-    if (count >= 3) {
-        btn.classList.add('disabled');
-        btn.innerText = "今日次数已用完";
-    } else {
-        btn.classList.remove('disabled');
-        btn.innerText = "抽奖";
-    }
-}
 
-window.addEventListener('load', async () => {
-    if (SUPA_URL.includes("REPLACE_WITH") || SUPA_KEY.includes("REPLACE_WITH")) {
-        console.warn("请将 SUPA_URL 和 SUPA_KEY 替换为你的 Supabase 项目配置，否则页面将只使用本地缓存。");
-        renderRecordsFromLocal();
-        updateDrawButton();
-        return;
-    }
+	/********弹窗页面控制**********/
+	
+	$('.close_zj').click(function(){
+		window.location.reload();
+		$('#zj-main').fadeOut();
+		$('#tx-main').fadeIn();//提醒框显示
+		//判断用户是否确认放弃
+		$(".do").click(function(){//点确认就默认放弃
+			$('#tx-main').fadeOut();
+		});
+		$(".not_do").click(function(){//点取消就回到提交页面
+			$('#tx-main').fadeOut();
+			$('#zj-main').fadeIn();
+		});
 
-    await loadRecords();
-    renderRecordsFromLocalAsFallback();
-    updateDrawButton();                    // 新增这行
-    setInterval(loadRecords, 8000);
-});
+		$('#ml-main').fadeIn();
+		
+	});
+	
+	$('.close_xxcy').click(function(){
+		$('#xxcy-main').fadeOut();
+		window.location.reload();
+	});
 
-// ============ 下面是你原来的所有代码，一字未改 ============
+	// 中奖者动画
+	var Mar = document.getElementById("Marquee"); 
+	var child_div=Mar.getElementsByTagName("div") 
+	var picH = 35;//移动高度 
+	var scrollstep=5;//移动步幅,越大越快 
+	var scrolltime=100;//移动频度(毫秒)越大越慢 
+	var stoptime=4000;//间断时间(毫秒) 
+	var tmpH = 0; 
+	Mar.innerHTML += Mar.innerHTML; 
+	function start(){ 
+	    if(tmpH < picH){ 
+	        tmpH += scrollstep; 
+	        if(tmpH > picH )tmpH = picH ; 
+	        Mar.scrollTop = tmpH; 
+	        setTimeout(start,scrolltime); 
+	    }else{ 
+	        tmpH = 0; 
+	        Mar.appendChild(child_div[0]); 
+	        Mar.scrollTop = 0; 
+	        setTimeout(start,stoptime); 
+	    } 
+	}
+	setTimeout(start,stoptime);
 
-async function saveRecordToSupabase(user, prize) {
-    try {
-        const { error } = await supabase
-            .from('records')
-            .insert({ user_name: user, prize: prize });
-        if (error) {
-            console.error("Supabase 写入失败：", error);
-            return false;
-        }
-        return true;
-    } catch (e) {
-        console.error("Supabase 写入异常：", e);
-        return false;
-    }
-}
-
-async function loadRecords() {
-    try {
-        const { data, error } = await supabase
-            .from('records')
-            .select('user_name, prize, created_at')
-            .order('created_at', { ascending: false })
-            .limit(200);
-
-        if (error) {
-            console.error("读取 Supabase 失败：", error);
-            return;
-        }
-        renderRecordsFromRemote(data);
-    } catch (e) {
-        console.error("读取 Supabase 异常：", e);
-    }
-}
-
-function renderRecordsFromRemote(remoteData) {
-    const listContainer = document.getElementById('marqueeList');
-    listContainer.innerHTML = '';
-
-    let localRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || "[]");
-    localRecords = localRecords.slice().reverse();
-
-    const defaultRecords = [
-        { name: "180的青春", prize: "iPhone 18 Pro", time: "2026/01/01" },
-        { name: "明天会更好", prize: "QQ音乐VIP会员", time: "2026/01/01" },
-        { name: "加油2026", prize: "喜素客素食自助餐-1份", time: "2026/01/01" }
-    ];
-
-    const remoteFormatted = (remoteData || []).map(r => ({
-        user_name: r.user_name,
-        prize: r.prize,
-        created_at: r.created_at
-    }));
-
-    const all = [...localRecords, ...remoteFormatted, ...defaultRecords];
-
-    all.forEach(rec => {
-        const div = document.createElement('div');
-        div.className = 'record-item';
-        const timeText = rec.created_at ? formatTime(rec.created_at) : '';
-        div.innerHTML = `<b>${maskName(rec.user_name)}</b> 获得 ${rec.prize} <span class="record-time">${timeText}</span>`;
-        listContainer.appendChild(div);
-    });
-}
-
-function renderRecordsFromLocal() {
-    const listContainer = document.getElementById('marqueeList');
-    listContainer.innerHTML = '';
-
-    '';
-
-    let localRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || "[]");
-    const defaultRecords = [
-        { name: "180的青春", prize: "iPhone 18 Pro", time: "2026/01/01" },
-        { name: "明天会更好", prize: "QQ音乐VIP会员", time: "2026/01/01" },
-        { name: "加油2026", prize: "喜素客素食自助餐-1份", time: "2026/01/01" }
-    ];
-
-    const all = [...localRecords.slice().reverse(), ...defaultRecords];
-
-    all.forEach(rec => {
-        const div = document.createElement('div');
-        div.className = 'record-item';
-        const timeStr = rec.time || '';
-        div.innerHTML = `<b>${maskName(rec.name || rec.user_name)}</b> 获得 ${rec.prize} <span class="record-time">${timeStr}</span>`;
-        listContainer.appendChild(div);
-    });
-}
-
-function renderRecordsFromLocalAsFallback() {
-    const listContainer = document.getElementById('marqueeList');
-    if (listContainer.children.length > 0) return;
-    renderRecordsFromLocal();
-}
-
-function maskName(name) {
-    if (!name) return '幸运用户';
-    //if (/\d{3}\*{4}\d{4}/.test(name)) return name;
-    //if (name.length <= 2) return name[0] + '*';
-    return name;   // 完整显示名字，不打码
-}
-
-function formatTime(t) {
-    try {
-        const d = new Date(t);
-        if (isNaN(d)) return t;
-        return d.toLocaleString();
-    } catch (e) {
-        return t;
-    }
-}
-
-// ============ 唯一改动的地方：点击抽奖按钮 ============
-function checkUserAndSpin() {
-    if (isSpinning) return;
-
-    const count = getTodayDrawCount();
-    if (count >= 3) {
-        alert("您今天的3次抽奖机会已用完，明天再来吧！");
-        return;
-    }
-
-    // 第二次提示
-    if (count === 1) {
-        if (!confirm("再给你一次机会！\n要继续抽奖吗？")) return;
-    }
-    // 第三次提示
-    if (count === 2) {
-        if (!confirm("最后给你一次机会了哦～\n确定要抽吗？")) return;
-    }
-
-    if (!currentUser) {
-        const modal = document.getElementById('nameModal');
-        modal.style.display = 'flex';
-        modal.style.opacity = '1';
-        setTimeout(() => document.getElementById('usernameInput').focus(), 100);
-    } else {
-        startLottery();
-    }
-}
-
-function submitName() {
-    const input = document.getElementById('usernameInput');
-    const name = input.value.trim();
-    if (!name) { alert("请输入姓名"); return; }
-    currentUser = name;
-    document.getElementById('nameModal').style.display = 'none';
-    startLottery();
-}
-
-// 你原来的转盘逻辑完全没动
-function startLottery() {
-    if (isSpinning) return;
-    isSpinning = true;
-
-    const wheel = document.getElementById('wheel');
-    const baseSpins = 1800;
-    const randomOffset = Math.floor(Math.random() * 360);
-    currentRotation += (baseSpins + randomOffset);
-    wheel.style.transform = `rotate(${currentRotation}deg)`;
-
-    setTimeout(async () => {
-        isSpinning = false;
-
-        const actualDeg = currentRotation % 360;
-        let pointingDeg = 360 - actualDeg;
-        if (pointingDeg === 360) pointingDeg = 0;
-
-        let prize = "";
-        if (pointingDeg >= 0 && pointingDeg < 60) prize = "iPhone 18 Pro";
-        else if (pointingDeg >= 60 && pointingDeg < 120) prize = "谢谢参与";
-        else if (pointingDeg >= 120 && pointingDeg < 180) prize = "QQ音乐VIP会员";
-        else if (pointingDeg >= 180 && pointingDeg < 240) prize = "喜素客素食自助餐-1份";
-        else if (pointingDeg >= 240 && pointingDeg < 300) prize = "陌陌VIP会员";
-        else if (pointingDeg >= 300 && pointingDeg < 360) prize = "0.1元红包";
-
-        handleResult(prize);
-    }, 4000);
-}
-
-async function handleResult(prize) {
-    alert(`结果揭晓：\n${prize}`);
-
-    addOneDraw();                    // 次数+1
-    updateDrawButton();              // 更新按钮
-
-    const today = new Date().toLocaleDateString();
-
-    if (prize !== "谢谢参与") {
-        const newRecordLocal = {
-            user_name: currentUser,
-            prize: prize,
-            time: new Date().toLocaleString()
-        };
-
-        let localRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || "[]");
-        localRecords.push(newRecordLocal);
-        localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(localRecords));
-
-        if (!(SUPA_URL.includes("REPLACE_WITH") || SUPA_KEY.includes("REPLACE_WITH"))) {
-            const ok = await saveRecordToSupabase(currentUser, prize);
-            if (!ok) {
-                console.warn("写入远端失败，记录已保存在本地缓存");
-            } else {
-                await loadRecords();
-            }
-        } else {
-            renderRecordsFromLocal();
-        }
-
-        const listEl = document.getElementById('marqueeList');
-        listEl.scrollTop = 0;
-    }
-
-    // 第三次抽完后额外提示
-    if (getTodayDrawCount() >= 3) {
-        setTimeout(() => {
-            alert("今天的3次机会已用完，明天再来哦～");
-        }, 500);
-    }
-}
+	
 </script>
+
 </body>
 </html>
-
-
