@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>探探5周年大抽奖</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>探探5周年大抽奖（Supabase 版）</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background: #ffb822;
             background: linear-gradient(180deg, #ffcf4b 0%, #ff9a00 100%);
             font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
             min-height: 100vh;
@@ -15,32 +14,30 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
+            padding-bottom: 60px;
         }
 
-        /* 顶部标题 */
         .header { text-align: center; margin-top: 30px; color: #d93600; }
-        .header h1 { font-size: 24px; font-weight: bold; border: 2px solid #333; display: inline-block; padding: 5px 20px; margin-bottom: 10px; }
-        .header h2 { font-size: 32px; font-weight: 800; text-shadow: 1px 1px 2px rgba(255,255,255,0.5); }
+        .header h1 { font-size: 24px; font-weight: bold; border: 2px solid #333; display: inline-block; padding: 5px 20px; margin-bottom: 10px; background: #fffdf0; border-radius: 6px;}
+        .header h2 { font-size: 32px; font-weight: 800; text-shadow: 1px 1px 2px rgba(255,255,255,0.5); color:#6b2100; margin-top:8px;}
 
-        /* 转盘容器 */
         .wheel-container {
             position: relative;
             width: 320px; height: 320px;
             margin: 20px auto;
-            background: #e64c3c;
-            border-radius: 50%;
             padding: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.05));
             border: 4px solid #ffeb3b;
         }
         .wheel-container::after {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%; border: 2px dashed #fff;
+            border-radius: 50%; border: 2px dashed rgba(255,255,255,0.25);
             animation: flash 1s infinite; pointer-events: none;
         }
         @keyframes flash { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
-        /* 转盘 */
         .wheel {
             width: 100%; height: 100%;
             background: #fffdf0; border-radius: 50%;
@@ -67,9 +64,8 @@
         .item-4 { transform: rotate(210deg); }
         .item-5 { transform: rotate(270deg); }
         .item-6 { transform: rotate(330deg); }
-        .prize-icon { display: block; width: 30px; height: 30px; background: #ddd; margin: 5px auto; border-radius: 4px; line-height: 30px; font-size: 10px; color: #666; }
+        .prize-icon { display: block; width: 30px; height: 30px; background: #ddd; margin: 5px auto; border-radius: 4px; line-height: 30px; font-size: 14px; color: #666; }
 
-        /* 指针按钮 */
         .pointer {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
@@ -87,71 +83,45 @@
             border-color: transparent transparent #ffcc00 transparent;
         }
         .pointer:active { transform: translate(-50%, -48%); box-shadow: 0 2px 0 #cc7a00; }
-        
-        /* 禁用状态的指针 */
         .pointer.disabled {
-            background: #ccc;
-            box-shadow: 0 4px 0 #999;
-            color: #666;
-            cursor: not-allowed;
+            background: #ccc; box-shadow: 0 4px 0 #999; color: #666; cursor: not-allowed;
         }
         .pointer.disabled::before { border-bottom-color: #ccc; }
 
-        /* 底部名单 */
         .footer-list {
-            width: 90%; background: rgba(255, 255, 255, 0.3);
+            width: 90%; background: rgba(255, 255, 255, 0.12);
             border-radius: 10px; padding: 10px; margin-top: 10px;
-            text-align: center; z-index: 5; height: 150px; /* 固定高度 */
+            text-align: center; z-index: 5; height: 150px;
             display: flex; flex-direction: column;
+            backdrop-filter: blur(3px);
         }
         .list-title { color: #fff; font-size: 14px; margin-bottom: 8px; font-weight: bold; flex-shrink: 0;}
-        .marquee-container {
-            flex: 1; overflow-y: auto; /* 允许滚动 */
-            position: relative;
-            -webkit-overflow-scrolling: touch;
-        }
-        /* 隐藏滚动条但保留功能 */
-        .marquee-container::-webkit-scrollbar { width: 4px; }
-        .marquee-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 2px; }
+        .marquee-container { flex: 1; overflow-y: auto; position: relative; -webkit-overflow-scrolling: touch; padding:6px;}
+        .marquee-container::-webkit-scrollbar { width: 6px; }
+        .marquee-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
 
-        .record-item {
-            color: #fff; font-size: 12px; line-height: 24px;
-            border-bottom: 1px dashed rgba(255,255,255,0.2);
-        }
-        .record-item b { color: #d93600; background: rgba(255,255,255,0.6); padding: 0 4px; border-radius: 4px; margin: 0 2px;}
-        .record-time { font-size: 10px; color: #eee; margin-left: 5px; opacity: 0.8; }
+        .record-item { color: #fff; font-size: 13px; line-height: 26px; border-bottom: 1px dashed rgba(255,255,255,0.12); padding: 2px 4px; text-align:left;}
+        .record-item b { color: #d93600; background: rgba(255,255,255,0.6); padding: 0 6px; border-radius: 4px; margin-right:6px; font-weight:700;}
+        .record-time { font-size: 11px; color: #fff; opacity: 0.85; float:right; }
 
-        /* 城市背景 */
-        .city-bg {
-            position: fixed; bottom: 0; width: 100%; height: 60px;
-            background-color: #e67e22;
-            mask-image: linear-gradient(to top, black, transparent);
-            -webkit-mask-image: linear-gradient(to top, black, transparent);
-            opacity: 0.5; z-index: 0;
-        }
+        .city-bg { position: fixed; bottom: 0; width: 100%; height: 60px; background-color: #e67e22; mask-image: linear-gradient(to top, black, transparent); -webkit-mask-image: linear-gradient(to top, black, transparent); opacity: 0.5; z-index: 0; }
 
-        /* 弹窗 */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); z-index: 100; display: none;
             justify-content: center; align-items: center;
         }
-        .modal-box {
-            background: #fff; width: 80%; max-width: 300px; padding: 20px;
-            border-radius: 15px; text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            animation: popIn 0.3s;
-        }
-        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-title { font-size: 18px; color: #333; margin-bottom: 15px; font-weight: bold; }
-        .modal-input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 15px; outline: none; }
+        .modal-box { background: #fff; width: 88%; max-width: 320px; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); animation: popIn 0.25s; }
+        .modal-title { font-size: 18px; color: #333; margin-bottom: 12px; font-weight: bold; }
+        .modal-input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 12px; outline: none; }
         .modal-input:focus { border-color: #ff9900; }
-        .modal-btn {
-            background: linear-gradient(to right, #ff9900, #ff5e00);
-            color: white; border: none; padding: 10px 30px; border-radius: 20px;
-            font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 94, 0, 0.3);
-        }
+        .modal-btn { background: linear-gradient(to right, #ff9900, #ff5e00); color: white; border: none; padding: 10px 30px; border-radius: 20px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 94, 0, 0.3); }
+
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -159,8 +129,10 @@
     <div class="modal-overlay" id="nameModal">
         <div class="modal-box">
             <div class="modal-title">请输入您的姓名</div>
-            <input type="text" class="modal-input" id="usernameInput" placeholder="例如：李四" maxlength="10">
-            <button class="modal-btn" onclick="submitName()">开始抽奖</button>
+            <input type="text" class="modal-input" id="usernameInput" placeholder="例如：李四" maxlength="20" />
+            <div style="display:flex; justify-content:center; gap:10px;">
+                <button class="modal-btn" onclick="submitName()">开始抽奖</button>
+            </div>
         </div>
     </div>
 
@@ -180,10 +152,7 @@
             <div class="prize-item item-6"><span>谢谢<br>参与</span><span class="prize-icon">😊</span></div>
         </div>
 
-        <!-- 按钮增加ID以便控制 -->
-        <div class="pointer" id="drawBtn" onclick="checkUserAndSpin()">
-            抽奖
-        </div>
+        <div class="pointer" id="drawBtn" onclick="checkUserAndSpin()">抽奖</div>
     </div>
 
     <div class="footer-list">
@@ -196,156 +165,298 @@
     <div class="city-bg"></div>
 
     <script>
-        // --- 配置与状态 ---
-        const STORAGE_KEY_RECORDS = 'lottery_records_v1';
-        const STORAGE_KEY_LAST_DATE = 'lottery_last_date_v1';
-        
-        let isSpinning = false;
-        let currentRotation = 0;
-        let currentUser = "";
+    /******************************
+     *  请务必替换下面两项为你自己的 Supabase 配置！
+     *  Supabase Dashboard -> Project Settings -> API
+     ******************************/
+    const SUPA_URL = "https://meiydxhkrtsupwzlvdiv.supabase.co"; // e.g. https://xxxxx.supabase.co
+    const SUPA_KEY = "sb_publishable_IoTm5rBUQo7_KuF9yM3UiA_xSbfGR2K";    // anon public key
 
-        // --- 初始化 ---
-        window.onload = function() {
-            renderRecords();
+    // 初始化 Supabase 客户端
+    const supabase = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+    /******************************
+     * 注意：在 Supabase 控制台的 SQL Editor 或 Table Editor
+     * 创建表（如果还没创建）：
+     *
+     * create table if not exists records (
+     *   id bigint generated always as identity primary key,
+     *   user_name text,
+     *   prize text,
+     *   created_at timestamptz default now()
+     * );
+     *
+     * 并且打开 Row Level Security 后添加两条 policy（仅示例，仅在你理解风险后使用）：
+     *
+     * -- 允许匿名插入
+     * create policy "allow_insert" on public.records
+     * for insert
+     * using ( true );
+     *
+     * -- 允许匿名查询
+     * create policy "allow_select" on public.records
+     * for select
+     * using ( true );
+     *
+     * 上面 policy 只有在你想让前端匿名读写时才启用（适用于抽奖名单展示场景）。
+     ******************************/
+
+    // 本地缓存 KEY（用于每日限制与备份）
+    const STORAGE_KEY_RECORDS = 'lottery_records_v1';
+    const STORAGE_KEY_LAST_DATE = 'lottery_last_date_v1';
+
+    let isSpinning = false;
+    let currentRotation = 0;
+    let currentUser = "";
+
+    // 页面加载：读取远端名单并合并本地数据
+    window.addEventListener('load', async () => {
+        // 如果没有替换 SUPA_URL/SUPA_KEY，提示并只使用本地数据
+        if (SUPA_URL.includes("REPLACE_WITH") || SUPA_KEY.includes("REPLACE_WITH")) {
+            console.warn("请将 SUPA_URL 和 SUPA_KEY 替换为你的 Supabase 项目配置，否则页面将只使用本地缓存。");
+            renderRecordsFromLocal(); // 退回到本地渲染
             checkDailyStatus();
-        };
+            return;
+        }
 
-        // 1. 检查今日是否已抽奖
-        function checkDailyStatus() {
-            const lastDate = localStorage.getItem(STORAGE_KEY_LAST_DATE);
-            const today = new Date().toLocaleDateString();
-            const btn = document.getElementById('drawBtn');
+        await loadRecords(); // 从 Supabase 读取并渲染
+        renderRecordsFromLocalAsFallback(); // 仍渲染本地记录（合并）
+        checkDailyStatus();
+        // 定时刷新（每 8 秒）
+        setInterval(loadRecords, 8000);
+    });
 
-            if (lastDate === today) {
-                btn.classList.add('disabled');
-                btn.innerText = "已抽";
-                return false; // 禁止抽奖
-            } else {
-                btn.classList.remove('disabled');
-                btn.innerText = "抽奖";
-                return true; // 允许抽奖
+    // ---------- Supabase 操作 ----------
+    async function saveRecordToSupabase(user, prize) {
+        try {
+            const { error } = await supabase
+                .from('records')
+                .insert({ user_name: user, prize: prize });
+            if (error) {
+                console.error("Supabase 写入失败：", error);
+                return false;
             }
+            return true;
+        } catch (e) {
+            console.error("Supabase 写入异常：", e);
+            return false;
         }
+    }
 
-        // 2. 渲染中奖记录 (合并默认数据和本地存储数据)
-        function renderRecords() {
-            const listContainer = document.getElementById('marqueeList');
-            listContainer.innerHTML = ''; // 清空
+    async function loadRecords() {
+        try {
+            const { data, error } = await supabase
+                .from('records')
+                .select('user_name, prize, created_at')
+                .order('created_at', { ascending: false })
+                .limit(200);
 
-            // 获取本地存储的记录
-            let localRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || "[]");
-
-            // 默认虚拟数据 (为了看起来不空)
-            const defaultRecords = [
-                { name: "180****0182", prize: "iPhone XS", time: "2023/10/01" },
-                { name: "183****1143", prize: "圣罗兰口红", time: "2023/10/02" },
-                { name: "138****8888", prize: "探探VIP会员", time: "2023/10/03" }
-            ];
-
-            // 合并：新记录在最前面
-            const allRecords = [...localRecords.reverse(), ...defaultRecords];
-
-            allRecords.forEach(rec => {
-                const div = document.createElement('div');
-                div.className = 'record-item';
-                // 如果没有时间字段，就不显示时间
-                const timeStr = rec.time ? `<span class="record-time">${rec.time}</span>` : '';
-                div.innerHTML = `恭喜 <b>${rec.name}</b> 获得 ${rec.prize} ${timeStr}`;
-                listContainer.appendChild(div);
-            });
-        }
-
-        // 3. 点击抽奖前置检查
-        function checkUserAndSpin() {
-            if (isSpinning) return;
-
-            // 再次检查日期限制
-            if (!checkDailyStatus()) {
-                alert("您今天已经抽过奖了，请明天再来！");
+            if (error) {
+                console.error("读取 Supabase 失败：", error);
                 return;
             }
-            
-            if (!currentUser) {
-                document.getElementById('nameModal').style.display = 'flex';
-                setTimeout(() => document.getElementById('usernameInput').focus(), 100);
-            } else {
-                startLottery();
-            }
+            renderRecordsFromRemote(data);
+        } catch (e) {
+            console.error("读取 Supabase 异常：", e);
         }
+    }
 
-        function submitName() {
-            const input = document.getElementById('usernameInput');
-            const name = input.value.trim();
-            if (!name) { alert("请输入姓名"); return; }
-            currentUser = name;
-            document.getElementById('nameModal').style.display = 'none';
+    // ---------- 渲染函数 ----------
+    // 渲染从 Supabase 拉到的数据（优先显示远端）
+    function renderRecordsFromRemote(remoteData) {
+        const listContainer = document.getElementById('marqueeList');
+        listContainer.innerHTML = '';
+
+        // 取本地数据作为前缀（本地最新放前）
+        let localRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || "[]");
+        localRecords = localRecords.slice().reverse(); // 最新的在前
+
+        // 默认虚拟数据（当远端为空时显示用）
+        const defaultRecords = [
+            { user_name: "180****0182", prize: "iPhone XS", created_at: "2023-10-01" },
+            { user_name: "183****1143", prize: "圣罗兰口红", created_at: "2023-10-02" },
+            { user_name: "138****8888", prize: "探探VIP会员", created_at: "2023-10-03" }
+        ];
+
+        // 合并：本地 -> 远端 -> 默认（远端可能包含大部分真实用户）
+        const remoteFormatted = (remoteData || []).map(r => ({
+            user_name: r.user_name,
+            prize: r.prize,
+            created_at: r.created_at
+        }));
+
+        const all = [...localRecords, ...remoteFormatted, ...defaultRecords];
+
+        all.forEach(rec => {
+            const div = document.createElement('div');
+            div.className = 'record-item';
+            // 时间显示
+            const timeText = rec.created_at ? formatTime(rec.created_at) : '';
+            div.innerHTML = `<b>${maskName(rec.user_name)}</b> 获得 ${rec.prize} <span class="record-time">${timeText}</span>`;
+            listContainer.appendChild(div);
+        });
+    }
+
+    // 当 Supabase 未配置或出错时，仅渲染本地记录（回退）
+    function renderRecordsFromLocal() {
+        const listContainer = document.getElementById('marqueeList');
+        listContainer.innerHTML = '';
+
+        let localRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || "[]");
+        const defaultRecords = [
+            { name: "180****0182", prize: "iPhone XS", time: "2023/10/01" },
+            { name: "183****1143", prize: "圣罗兰口红", time: "2023/10/02" },
+            { name: "138****8888", prize: "探探VIP会员", time: "2023/10/03" }
+        ];
+
+        const all = [...localRecords.slice().reverse(), ...defaultRecords];
+
+        all.forEach(rec => {
+            const div = document.createElement('div');
+            div.className = 'record-item';
+            const timeStr = rec.time || '';
+            div.innerHTML = `<b>${maskName(rec.name || rec.user_name)}</b> 获得 ${rec.prize} <span class="record-time">${timeStr}</span>`;
+            listContainer.appendChild(div);
+        });
+    }
+
+    // 当 Supabase 可用但希望同时显示本地缓存（合并策略）
+    function renderRecordsFromLocalAsFallback() {
+        // 如果 Supabase 已渲染 remote，会在 loadRecords 中更新；这里可以选择不重复覆盖。
+        // 为简单起见：如果已加载远端数据（marqueeList 子元素 > 0 且不是空），我们不再覆盖。
+        const listContainer = document.getElementById('marqueeList');
+        if (listContainer.children.length > 0) return;
+        renderRecordsFromLocal();
+    }
+
+    // ---------- 辅助工具 ----------
+    function maskName(name) {
+        if (!name) return '匿名用户';
+        // 如果已经是手机号掩码格式，就直接返回
+        if (/\d{3}\*{4}\d{4}/.test(name)) return name;
+        if (name.length <= 2) return name[0] + '*';
+        return name.slice(0,1) + '***' + name.slice(-1);
+    }
+
+    function formatTime(t) {
+        try {
+            const d = new Date(t);
+            if (isNaN(d)) return t;
+            return d.toLocaleString();
+        } catch (e) {
+            return t;
+        }
+    }
+
+    // ---------- 抽奖 / 本地逻辑 ----------
+    function checkDailyStatus() {
+        const lastDate = localStorage.getItem(STORAGE_KEY_LAST_DATE);
+        const today = new Date().toLocaleDateString();
+        const btn = document.getElementById('drawBtn');
+
+        if (lastDate === today) {
+            btn.classList.add('disabled');
+            btn.innerText = "已抽";
+            return false; // 禁止抽奖
+        } else {
+            btn.classList.remove('disabled');
+            btn.innerText = "抽奖";
+            return true; // 允许抽奖
+        }
+    }
+
+    function checkUserAndSpin() {
+        if (isSpinning) return;
+        if (!checkDailyStatus()) { alert("您今天已经抽过奖了，请明天再来！"); return; }
+
+        if (!currentUser) {
+            document.getElementById('nameModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('usernameInput').focus(), 100);
+        } else {
             startLottery();
         }
+    }
 
-        // 4. 核心抽奖逻辑
-        function startLottery() {
-            if (isSpinning) return;
-            isSpinning = true;
+    function submitName() {
+        const input = document.getElementById('usernameInput');
+        const name = input.value.trim();
+        if (!name) { alert("请输入姓名"); return; }
+        currentUser = name;
+        document.getElementById('nameModal').style.display = 'none';
+        startLottery();
+    }
 
-            const wheel = document.getElementById('wheel');
-            const baseSpins = 1800; 
-            const randomOffset = Math.floor(Math.random() * 360);
-            currentRotation += (baseSpins + randomOffset);
-            wheel.style.transform = `rotate(${currentRotation}deg)`;
+    // 抽奖动画与结果判定（保持你原有的逻辑）
+    function startLottery() {
+        if (isSpinning) return;
+        isSpinning = true;
 
-            setTimeout(() => {
-                isSpinning = false;
-                
-                // 计算结果
-                const actualDeg = currentRotation % 360;
-                let pointingDeg = 360 - actualDeg;
-                if (pointingDeg === 360) pointingDeg = 0;
+        const wheel = document.getElementById('wheel');
+        const baseSpins = 1800; // 大转数，确保有转动感
+        const randomOffset = Math.floor(Math.random() * 360);
+        currentRotation += (baseSpins + randomOffset);
+        wheel.style.transform = `rotate(${currentRotation}deg)`;
 
-                let prize = "";
-                if (pointingDeg >= 0 && pointingDeg < 60) prize = "纪梵希小羊皮口红";
-                else if (pointingDeg >= 300 && pointingDeg < 360) prize = "ARMANI阿玛尼";
-                else if (pointingDeg >= 240 && pointingDeg < 300) prize = "探探VIP会员";
-                else if (pointingDeg >= 180 && pointingDeg < 240) prize = "iPhone XS";
-                else if (pointingDeg >= 120 && pointingDeg < 180) prize = "圣罗兰口红";
-                else if (pointingDeg >= 60 && pointingDeg < 120) prize = "谢谢参与";
+        setTimeout(async () => {
+            isSpinning = false;
 
-                // 处理结果
-                handleResult(prize);
+            const actualDeg = currentRotation % 360;
+            let pointingDeg = 360 - actualDeg;
+            if (pointingDeg === 360) pointingDeg = 0;
 
-            }, 4000);
-        }
+            let prize = "";
+            if (pointingDeg >= 0 && pointingDeg < 60) prize = "纪梵希小羊皮口红";
+            else if (pointingDeg >= 60 && pointingDeg < 120) prize = "谢谢参与";
+            else if (pointingDeg >= 120 && pointingDeg < 180) prize = "圣罗兰口红";
+            else if (pointingDeg >= 180 && pointingDeg < 240) prize = "iPhone XS";
+            else if (pointingDeg >= 240 && pointingDeg < 300) prize = "探探VIP会员";
+            else if (pointingDeg >= 300 && pointingDeg < 360) prize = "ARMANI阿玛尼";
 
-        // 5. 结果处理与保存
-        function handleResult(prize) {
-            alert(`🎉 结果揭晓：\n${prize}`);
+            handleResult(prize);
+        }, 4000);
+    }
 
-            // 记录今日已抽
-            const today = new Date().toLocaleDateString();
-            localStorage.setItem(STORAGE_KEY_LAST_DATE, today);
-            
-            // 更新按钮状态
-            checkDailyStatus();
+    async function handleResult(prize) {
+        alert(`🎉 结果揭晓：\n${prize}`);
 
-            // 如果不是“谢谢参与”，则保存到中奖名单
-            if (prize !== "谢谢参与") {
-                const newRecord = {
-                    name: currentUser,
-                    prize: prize,
-                    time: new Date().toLocaleTimeString() // 记录具体时间
-                };
+        // 标记今日已抽
+        const today = new Date().toLocaleDateString();
+        localStorage.setItem(STORAGE_KEY_LAST_DATE, today);
+        checkDailyStatus();
 
-                // 读取旧数据 -> 插入新数据 -> 保存
-                let records = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || "[]");
-                records.push(newRecord); // 存入数组
-                localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(records));
+        // 如果不是“谢谢参与”，保存记录（本地 + Supabase）
+        if (prize !== "谢谢参与") {
+            const newRecordLocal = {
+                name: currentUser,
+                prize: prize,
+                time: new Date().toLocaleString()
+            };
 
-                // 刷新界面列表
-                renderRecords();
-                
-                // 滚动到顶部查看最新记录
-                document.getElementById('marqueeList').scrollTop = 0;
+            // 保存到本地（供离线或回退用）
+            let localRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || "[]");
+            localRecords.push(newRecordLocal);
+            localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(localRecords));
+
+            // 同步写入 Supabase（若配置正确）
+            if (!(SUPA_URL.includes("REPLACE_WITH") || SUPA_KEY.includes("REPLACE_WITH"))) {
+                const ok = await saveRecordToSupabase(currentUser, prize);
+                if (!ok) {
+                    console.warn("写入远端失败，记录已保存在本地缓存");
+                } else {
+                    // 若写入成功，优先从远端重新拉取最新名单并渲染
+                    await loadRecords();
+                }
+            } else {
+                // 未配置 Supabase 时，直接渲染本地记录
+                renderRecordsFromLocal();
             }
+
+            // 滚动到顶部以便看到刚中之人
+            const listEl = document.getElementById('marqueeList');
+            listEl.scrollTop = 0;
         }
+    }
+
     </script>
 </body>
 </html>
