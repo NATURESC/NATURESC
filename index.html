@@ -1,306 +1,141 @@
-﻿<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-<title>自然法则集团2025年度抽奖大回馈</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Name | 某某公司</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; color: #333; line-height: 1.6; }
+        header { background: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 22px; font-weight: bold; color: #007AFF; }
+        
+        /* 语言切换按钮样式 */
+        .lang-switch { cursor: pointer; padding: 5px 15px; border: 1px solid #007AFF; border-radius: 20px; color: #007AFF; font-size: 14px; transition: 0.3s; }
+        .lang-switch:hover { background: #007AFF; color: #fff; }
 
-<link href="css/mui.min.css" rel="stylesheet">
-<link href="css/award.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="css/animate.min.css">
-<script src="js/jquery.min.js"></script>
-<script src="js/turntable.js"></script>
-<style type="text/css">
-	body,ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,div{margin:0;padding:0;border:0;}
-	body{color:#333; font-size:12px;font-family:"Microsoft YaHei"}
-	ul,ol{list-style-type:none;}
-	select,input,img,select{vertical-align:middle;}
-	input{ font-size:12px;}
-	a{ text-decoration:none; color:#000;}
-	a:hover{color:#c00; text-decoration:none;}
-	.clear{clear:both;}
+        .hero { padding: 100px 5%; text-align: center; background: #f9f9f9; }
+        .hero h1 { font-size: 40px; margin-bottom: 20px; }
+        
+        .section { padding: 60px 5%; text-align: center; }
+        .grid { display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 30px; }
+        .card { flex: 1; min-width: 250px; margin: 10px; padding: 25px; border: 1px solid #eee; border-radius: 8px; }
 
-	/* 大转盘样式 */
-	.banner{display:block;width:95%;margin-left:auto;margin-right:auto;margin-bottom: 20px;}
-	.banner .turnplate{display:block;width:100%;position:relative;}
-	.banner .turnplate canvas.item{width:100%;}
-	.banner .turnplate img.pointer{position:absolute;width:36%;height:40%;left:32%;top:28%;}
-	.more{display: block;width: 100%;position: fixed;top: 0;left: 0;height: 150px;}
-	.cloud{position: fixed;left: 0;top: 70%;width: 150px;}
-	.cloud2{position: fixed;right: 0;top: 32%;width: 50px;}
-	.cloud3{position: fixed;left: 0;top: 30%;width: 100px;}
-	@media screen and (max-width: 320px) {
-		.cloud{position: fixed;left: 0;top: 70%;width: 150px;}
-		.cloud2{position: fixed;right: 0;top: 30%;width: 50px;}
-		.cloud3{position: fixed;left: 0;top: 23%;width: 100px;}
-	}
-	@media screen and (min-width: 321px) and (max-width: 375px) {
-		.cloud{position: fixed;left: 0;top: 72%;width: 150px;}
-		.cloud2{position: fixed;right: 0;top: 32%;width: 50px;}
-		.cloud3{position: fixed;left: 0;top: 25%;width: 100px;}
-	}
-	@media screen and (min-width: 376px) {
-		.cloud{position: fixed;left: 0;top: 68%;width: 150px;}
-		.cloud2{position: fixed;right: 0;top: 32%;width: 50px;}
-		.cloud3{position: fixed;left: 0;top: 25%;width: 100px;}
-	}
-	@media screen and (max-height: 480px) {
-		.cloud{position: fixed;left: 0;top: 81%;width: 150px;}
-		.cloud2{position: fixed;right: 0;top: 35%;width: 50px;}
-		.cloud3{position: fixed;left: 0;top: 27%;width: 100px;}
-	}
-
-	#mark{width: 100%;height: 100%;background: rgba(0,0,0,0.5);position: fixed;top: 0;left: 0;display: none;}
-	.red-img{position: fixed;top: 10%;left: 5%;width: 90%;}
-</style>
-
+        footer { background: #333; color: #fff; padding: 30px 5%; text-align: center; font-size: 13px; }
+        @media (max-width: 600px) { .hero h1 { font-size: 28px; } .grid { flex-direction: column; } }
+    </style>
 </head>
 <body>
-<!-------------抽奖页面-------------->
-<div class="ml-main" id="ml-main">
-	<img class="main_back" src="img/back.png">
-	<img class="animated zoomIn img_2_1" src="img/img_1.png">
-	<img class="animated bounceIn img_2_2" src="img/img_2.png">
-	<div class="kePublic">
-		<!--转盘效果开始-->
-		<div style="margin:0 auto">
-			<div class="banner">
-				<div class="turnplate">
-					<!-- <canvas class="item" id="wheelcanvas" width="516" height="516"></canvas> -->
-					<canvas class="item" id="myCanvas" width="520px" height="520px">当前浏览器版本过低，请使用其他浏览器尝试</canvas>
-					<img src="images/start.png" id="start" class="pointer">
-					<!-- <img id="tupBtn" class="pointer" src="img/turnplate-pointer_2.png"> -->
-				</div>
-			</div>
-		</div>
-		<!--转盘效果结束-->
-		<div class="clear"></div>
-	</div>
-	<img class="bottom_shadow" src="img/bottom_shadow.png">
-	<img class="animated zoomIn kePublic_back" src="img/back1.png">
-	
-	<!--------------滚动中奖纪录---------------->
-	<div class="record_line" id="Marquee">
-		<div id="">
-			恭喜  159****3540  的用户抽中  <span id="gift_coupon">200元现金代金券</span>
-		</div>
-	</div>
 
-	<!-------------底部声明-------------->
-	<img class="rule_title" src="img/rule_title.png">
-	<div class="rule_text">
-		本活动与Apple Inc.无关。<br>
-		主办单位：<a href="http://www.geekxz.com/" target="_blank">自然法则（集团）有限公司</a>
-	</div>
-</div>
+<header>
+    
+    <div class="logo" id="nav-logo">自然法则</div>
+    <div class="lang-switch" onclick="toggleLanguage()" id="lang-btn">English</div>
+</header>
 
-<!-------------中奖弹窗页面-------------->
-<div class="zj-main" id="zj-main">
-		<div class="txzl">
-			<div class="zj_text">
-				中奖啦<br>恭喜获得<span id="jiangpin"></span>
-			</div>
-			<div class="close_zj">关闭</div>
-		</div>
-</div>
+<section class="hero">
+    <h1 id="hero-title">一切，自有其理。</h1>
+    <p id="hero-desc">我们致力于为全球客户提供最优质的服务。</p>
+</section>
 
-<!-------------谢谢参与弹窗-------------->
-<div class="xxcy-main" id="xxcy-main">
-	<div class="xxcy">
-		<div class="xxcy_text">
-			很遗憾<br>没有抽中礼品
-		</div>   
-		<div class="close_xxcy">关闭</div>
-	</div>
-</div>
+<section class="section">
+    <h2 id="svc-title">旗下业务</h2>
+    <div class="grid">
+        <div class="card">
+            <h3 id="card1-t">玄心资本</h3>
+            <p id="card1-p">不显山水，自有分量。</p>
+        </div>
+        <div class="card">
+            <h3 id="card2-t">万极商业</h3>
+            <p id="card2-p">让商业，走向极值。</p>
+        </div>
+        <div class="card">
+            <h3 id="card3-t">玄心奥妙（香港）</h3>
+            <p id="card3-p">风险先行，收益随后。</p>
+        </div>
+        <div class="card">
+            <h3 id="card4-t">迷雾基金</h3>
+            <p id="card4-p">在迷雾中，保持方向。</p>
+        </div>
+        <div class="card">
+            <h3 id="card5-t">一页调查</h3>
+            <p id="card5-p">一页，看清真相。</p>
+        </div>
+        <div class="card">
+            <h3 id="card6-t">OneLine设想艺术</h3>
+            <p id="card6-p">想法，不必复杂。</p>
+        </div>
+    </div>
+</section>
 
+<footer>
+    <div>联系邮箱：contact@naturesc.asia</div>
+    <p id="footer-copy">© 2026 自然法则（集团）有限公司 版权所有</p>
+</footer>
 
 <script>
-	var wheelSurf
-	// 初始化装盘数据 正常情况下应该由后台返回
-	var initData = {
-		"success": true,
-		"list": [{
-				"id": 100,
-				"name": "5000元京东卡",
-				"image": "images/1.png",
-				"rank":1,
-				"percent":0
-			},
-			{
-				"id": 101,
-				"name": "1000元京东卡",
-				"image": "images/2.png",
-				"rank":2,
-				"percent":0
-			},
-			{
-				"id": 102,
-				"name": "谢谢参与",
-				"image": "images/3.png",
-				"rank":3,
-				"percent":99
-			},
-			{
-				"id": 103,
-				"name": "50元话费",
-				"image": "images/4.png",
-				"rank":4,
-				"percent":0
-			},
-			{
-				"id": 104,
-				"name": "100元话费",
-				"image": "images/5.png",
-				"rank":5,
-				"percent":0
-			},
-			{
-				"id": 105,
-				"name": "谢谢参与",
-				"image": "images/6.png",
-				"rank":6,
-				"percent":0
-			},
-			{
-				"id": 106,
-				"name": "喜素客素食自助餐",
-				"image": "images/7.png",
-				"rank":7,
-				"percent":0
-			}
-		]
-	}
+    // 1. 定义中英文文案数据库
+    const i18n = {
+    'zh': {
+        'nav-logo': '自然法则',
+        'lang-btn': 'English',
+        'svc-title': '旗下业务',
+        'card1-t': '玄心资本',
+        'card1-p': '不显山水，自有分量。',
+        'card2-t': '万极商业',
+        'card2-p': '让商业，走向极值。',
+        'card3-t': '玄心奥妙（香港）',
+        'card3-p': '风险先行，收益随后。',
+        'card4-t': '迷雾基金',
+        'card4-p': '在迷雾中，保持方向。',
+        'card5-t': '一页调查',
+        'card5-p': '一页，看清真相。',
+        'card6-t': 'OneLine 设想艺术',
+        'card6-p': '想法，不必复杂。'
+    },
+    'en': {
+        'nav-logo': 'NATURESC',
+        'lang-btn': '中文',
+        'svc-title': 'Our Businesses',
+        'card1-t': 'MYSTCAP',
+        'card1-p': 'Subtle Presence, Substantial Power.',
+        'card2-t': 'Infinite Apex Commerce',
+        'card2-p': 'Driving Business to Its Limit.',
+        'card3-t': 'Mystic Secrets (HK)',
+        'card3-p': 'Risk Foremost, Returns Follow.',
+        'card4-t': 'Enigma Fund',
+        'card4-p': 'Maintain Direction Within the Mist.',
+        'card5-t': 'OnePage Investigations',
+        'card5-p': 'One Page to Reveal the Truth.',
+        'card6-t': 'OneLine Concept Art',
+        'card6-p': 'Ideas Shouldn’t Be Complex.'
+    }
+};
 
-	// 计算分配获奖概率(前提所有奖品概率相加100%)
-	function getGift(){
-		var percent = Math.random()*100
-		var totalPercent = 0
-		for(var i = 0 ,l = initData.list.length;i<l;i++){
-			totalPercent += initData.list[i].percent
-			if(percent<=totalPercent){
-				console.log(initData.list[i]);
-				return initData.list[i]
-			}
-		}           
-	}
+    let currentLang = 'zh';
 
-	var list = {}
-	
-	var angel = 360 / initData.list.length
-	// 格式化成插件需要的奖品列表格式
-	for (var i = 0, l = initData.list.length; i < l; i++) {
-		list[initData.list[i].rank] = {
-			id:initData.list[i].id,
-			name: initData.list[i].name,
-			image: initData.list[i].image
-		}
-	}
-	// 查看奖品列表格式
-	
-	// 定义转盘奖品
-	wheelSurf = $('#myCanvas').WheelSurf({
-		list: list, // 奖品 列表，(必填)
-		outerCircle: {
-			color: '#df1e15' // 外圈颜色(可选)
-		},
-		innerCircle: {
-			color: '#f4ad26' // 里圈颜色(可选)
-		},
-		dots: ['#fbf0a9', '#fbb936'], // 装饰点颜色(可选)
-		disk: ['#ffb933', '#ffe8b5', '#ffb933', '#ffd57c', '#ffb933', '#ffe8b5', '#ffd57c'], //中心奖盘的颜色，默认7彩(可选)
-		title: {
-			color: '#5c1e08',
-			font: '19px Arial'
-		} // 奖品标题样式(可选)
-	})
+    // 2. 切换语言的函数
+    function toggleLanguage() {
+        currentLang = (currentLang === 'zh') ? 'en' : 'zh';
+        
+        // 遍历所有带有 ID 的元素并替换文本
+        for (let key in i18n[currentLang]) {
+            const element = document.getElementById(key);
+            if (element) {
+                element.innerText = i18n[currentLang][key];
+            }
+        }
+        
+        // 记住用户的选择（可选：存入本地缓存）
+        localStorage.setItem('preferredLang', currentLang);
+    }
 
-	// 初始化转盘
-	wheelSurf.init()
-	// 抽奖
-	var throttle = true;
-	$("#start").on('click', function () {
-
-		var winData = getGift() // 正常情况下获奖信息应该由后台返回
-
-		$("#message").html('')
-		if(!throttle){
-			return false;
-		}
-		throttle = false;
-		var count = 0
-		// 计算奖品角度
-
-		for (const key in list) {
-			if (list.hasOwnProperty(key)) {                    
-				if (winData.id == list[key].id) {
-					break;
-				}
-				count++    
-			}
-		}
-  
-		// 转盘抽奖，
-		wheelSurf.lottery((count * angel + angel / 2), function () {
-			/*$(".xxcy_text").html('谢谢参与');
-			$("#xxcy-main").fadeIn();*/
-			$("#zj-main").fadeIn();
-			$("#jiangpin").text('['+winData.name+']');
-			throttle = true;
-		})
-	})
-
-
-
-	/********弹窗页面控制**********/
-	
-	$('.close_zj').click(function(){
-		window.location.reload();
-		$('#zj-main').fadeOut();
-		$('#tx-main').fadeIn();//提醒框显示
-		//判断用户是否确认放弃
-		$(".do").click(function(){//点确认就默认放弃
-			$('#tx-main').fadeOut();
-		});
-		$(".not_do").click(function(){//点取消就回到提交页面
-			$('#tx-main').fadeOut();
-			$('#zj-main').fadeIn();
-		});
-
-		$('#ml-main').fadeIn();
-		
-	});
-	
-	$('.close_xxcy').click(function(){
-		$('#xxcy-main').fadeOut();
-		window.location.reload();
-	});
-
-	// 中奖者动画
-	var Mar = document.getElementById("Marquee"); 
-	var child_div=Mar.getElementsByTagName("div") 
-	var picH = 35;//移动高度 
-	var scrollstep=5;//移动步幅,越大越快 
-	var scrolltime=100;//移动频度(毫秒)越大越慢 
-	var stoptime=4000;//间断时间(毫秒) 
-	var tmpH = 0; 
-	Mar.innerHTML += Mar.innerHTML; 
-	function start(){ 
-	    if(tmpH < picH){ 
-	        tmpH += scrollstep; 
-	        if(tmpH > picH )tmpH = picH ; 
-	        Mar.scrollTop = tmpH; 
-	        setTimeout(start,scrolltime); 
-	    }else{ 
-	        tmpH = 0; 
-	        Mar.appendChild(child_div[0]); 
-	        Mar.scrollTop = 0; 
-	        setTimeout(start,stoptime); 
-	    } 
-	}
-	setTimeout(start,stoptime);
-
-	
+    // 3. 页面加载时检查语言偏好（可选）
+    window.onload = () => {
+        const savedLang = localStorage.getItem('preferredLang');
+        if (savedLang && savedLang !== currentLang) {
+            toggleLanguage();
+        }
+    };
 </script>
 
 </body>
